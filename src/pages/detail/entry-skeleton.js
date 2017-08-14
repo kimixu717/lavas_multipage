@@ -3,12 +3,12 @@
  * @author KimiXu(xuyujin@banggood.cn)
  */
 
-import Vue from 'vue';
-import Skeleton from './Detail.skeleton.vue';
+import Vue from 'vue'
+import Skeleton from './Detail.skeleton.vue'
 
 export default new Vue({
-    components: {
-        Skeleton
-    },
-    template: '<skeleton />'
-});
+  components: {
+    Skeleton
+  },
+  template: '<skeleton />'
+})

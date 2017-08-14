@@ -3,14 +3,14 @@
  * @author KimiXu(xuyujin@banggood.cn)
  */
 
-import Search from '@/pages/search/Search.vue';
+import Search from '@/pages/search/Search.vue'
 
 export default {
-    routes: [
-        {
-            path: '/search',
-            name: 'search',
-            component: Search
-        }
-    ]
-};
+  routes: [
+    {
+      path: '/search',
+      name: 'search',
+      component: Search
+    }
+  ]
+}
