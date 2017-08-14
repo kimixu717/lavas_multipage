@@ -58,7 +58,7 @@
     activated() {
       this.setAppHeader({
         show: true,
-        title: 'Lavas',
+        title: 'User',
         showMenu: true,
         showBack: false,
         showLogo: true,
