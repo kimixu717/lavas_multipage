@@ -4,7 +4,7 @@
  */
 
 import Vue from 'vue'
-import Skeleton from './Home.skeleton.vue'
+import Skeleton from './Demo.skeleton.vue'
 
 export default new Vue({
   components: {

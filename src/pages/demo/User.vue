@@ -59,15 +59,8 @@
       this.setAppHeader({
         show: true,
         title: 'User',
-        showMenu: true,
-        showBack: false,
-        showLogo: true,
-        actions: [
-          {
-            icon: 'search',
-            route: '/search'
-          }
-        ]
+        showMenu: false,
+        showBack: true
       })
     },
     async asyncData({ store, route }) {

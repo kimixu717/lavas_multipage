@@ -1,6 +1,7 @@
 <template>
   <div>
-    <h2>Home</h2>
+    <h2>Demo</h2>
+    <router-link to="/demo/user">to user</router-link>
   </div>
 </template>
 
@@ -23,16 +24,9 @@
     activated() {
       this.setAppHeader({
         show: true,
-        title: 'Home',
+        title: 'Demo',
         showMenu: true,
-        showBack: false,
-        showLogo: true,
-        actions: [
-          {
-            icon: 'search',
-            route: '/search'
-          }
-        ]
+        showBack: false
       })
     }
   }

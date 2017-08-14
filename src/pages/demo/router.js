@@ -3,18 +3,18 @@
  * @author KimiXu(xuyujin@banggood.cn)
  */
 
-import Home from '@/pages/home/Home.vue'
-import User from '@/pages/home/User.vue'
+import Demo from '@/pages/demo/Demo.vue'
+import User from '@/pages/demo/User.vue'
 
 export default {
   routes: [
     {
-      path: '/home',
-      name: 'home',
-      component: Home
+      path: '/demo',
+      name: 'demo',
+      component: Demo
     },
     {
-      path: '/home/user',
+      path: '/demo/user',
       name: 'user',
       component: User
     }

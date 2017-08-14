@@ -90,7 +90,7 @@ export function createRouter({ routes = [] }) {
  * @type {Array.<string>}
  * @const
  */
-const ALWAYS_BACK_PAGE = ['home']
+const ALWAYS_BACK_PAGE = ['']
 
 /**
  * to 如果在这个列表中，始终采用从右到左的滑动效果
