@@ -7,13 +7,7 @@
       </header>
       <ul class="side-nav__content">
         <li @click="hideSideNav">
-          <router-link to="/detail/1">detail 1</router-link>
-        </li>
-        <li @click="hideSideNav">
-          <router-link to="/detail/2">detail 2</router-link>
-        </li>
-        <li @click="hideSideNav">
-          <router-link to="/detail/3">detail 3</router-link>
+          test
         </li>
       </ul>
     </nav>
