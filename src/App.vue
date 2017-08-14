@@ -1,12 +1,10 @@
 <template>
   <div id="app">
     <div class="app-shell">
-      <app-header class="app-shell-header" @click-menu="handleClickHeaderMenu" @click-back="handleClickHeaderBack">
+      <app-header class="app-shell-header" @click-back="handleClickHeaderBack">
         <template slot="logo"></template>
       </app-header>
-      <app-sidebar @hide-sidebar="handleHideSidebar" @show-sidebar="handleShowSidebar">
-        <template slot="logo"><span></span></template>
-      </app-sidebar>
+      <app-sidebar></app-sidebar>
       <div class="app-view-wrapper">
         <transition :name="pageTransitionName" @before-enter="handleBeforeEnter" @after-enter="handleAfterEnter" @before-leave="handleBeforeLeave">
           <keep-alive>
@@ -45,10 +43,6 @@
       ...mapActions('appShell', [
         'setPageSwitching'
       ]),
-      ...mapActions('appShell/appSidebar', [
-        'showSidebar',
-        'hideSidebar'
-      ]),
       handleBeforeEnter(el) {
         this.setPageSwitching(true)
       },
@@ -61,15 +55,6 @@
       },
       handleClickHeaderBack() {
         this.$router.go(-1)
-      },
-      handleClickHeaderMenu() {
-        this.showSidebar()
-      },
-      handleHideSidebar() {
-        this.hideSidebar()
-      },
-      handleShowSidebar() {
-        this.showSidebar()
       }
     }
   }

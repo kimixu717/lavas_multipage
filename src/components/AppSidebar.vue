@@ -1,220 +1,272 @@
 <template>
-  <sidebar v-model="sidebarStatus">
-    <!-- sidebar 内容部分 -->
-    <div
-      class="app-sidebar-content">
-      <!-- 头部 -->
-      <div v-if="title" class="app-sidebar-title" @click.stop="closeAndGo('/')">
-        <span class="app-sidebar-title-left-icon">
-          <img v-if="title.imageLeft" :src="title.imageLeft" :alt="title.altLeft">
-          <icon v-else-if="title.svgLeft" :name="title.svgLeft"></icon>
-          <v-icon light v-else-if="title.iconLeft">{{ title.iconLeft }}</v-icon>
-        </span>
-        <span>{{ title.text }}</span>
-        <slot name="logo" class="app-sidebar-title-right-logo">
-          <span class="app-sidebar-title-right-logo">
-            <img v-if="title.imageRight" :src="title.imageRight" :alt="title.altRight">
-            <icon v-else-if="title.svgRight" :name="title.svgRight"></icon>
-            <v-icon v-else-if="title.iconRight">{{ title.iconRight }}</v-icon>
-          </span>
-        </slot>
-      </div>
-
-      <!-- 用户信息 -->
-      <div v-if="user" class="app-sidebar-user">
-        <div class="user-avatar">
-          <v-icon light class="user-avatar-icon">face</v-icon>
-        </div>
-        <div class="user-info">
-          <div class="user-name">
-            <v-icon>person</v-icon>
-            {{user.name}}
-          </div>
-          <div class="user-location">
-            <v-icon>room</v-icon>
-            {{user.location}}
-          </div>
-          <div class="user-email">
-            <v-icon>email</v-icon>
-            {{user.email}}
-          </div>
-        </div>
-      </div>
-
-      <!-- 导航列表分区块 -->
-      <div v-if="blocks" class="app-sidebar-blocks">
-        <ul>
-          <!-- 单个区块 -->
-          <li v-for="(block, index) in blocks" :key="index" class="app-sidebar-block">
-            <div v-if="block.sublistTitle" class="sub-list-title">{{ block.sublistTitle }}</div>
-            <ul v-if="block.list">
-              <li v-for="item in block.list" :key="item.text" @click.stop="closeAndGo(item.route)">
-                <span v-if="item.icon || item.image || item.svg " class="app-sidebar-block-left-icon">
-                  <img v-if="item.image" :src="item.image" :alt="item.alt">
-                  <icon v-else-if="item.svg" :name="item.svg"></icon>
-                  <v-icon v-else-if="item.icon">{{ item.icon }}</v-icon>
-                </span>
-                <span v-if="item.text" class="app-sidebar-block-text">{{ item.text }}</span>
-              </li>
-            </ul>
-          </li>
-        </ul>
-      </div>
-    </div>
-  </sidebar>
+  <aside class="js-side-nav side-nav">
+    <nav class="js-side-nav-container side-nav__container">
+      <button class="js-menu-hide side-nav__hide material-icons">close</button>
+      <header class="side-nav__header">
+        Side Nav
+      </header>
+      <ul class="side-nav__content">
+        <li @click="hideSideNav">
+          <router-link to="/detail/1">detail 1</router-link>
+        </li>
+        <li @click="hideSideNav">
+          <router-link to="/detail/2">detail 2</router-link>
+        </li>
+        <li @click="hideSideNav">
+          <router-link to="/detail/3">detail 3</router-link>
+        </li>
+      </ul>
+    </nav>
+  </aside>
 </template>
 
 <script>
-  import { mapState } from 'vuex'
-  import Sidebar from './Sidebar'
+  import EventBus from '../event-bus'
 
-  export default {
-    components: {
-      Sidebar
-    },
-    computed: {
-      ...mapState('appShell/appSidebar', [
-        'show',
-        'title',
-        'user',
-        'blocks'
-      ]),
-      sidebarStatus: {
-        get () {
-          return this.show
-        },
-        set (val) {
-          if (val) {
-            this.$emit('show-sidebar')
+  class Detabinator {
+    constructor(element) {
+      if (!element) {
+        throw new Error('Missing required argument. new Detabinator needs an element reference')
+      }
+      this._inert = false
+      this._focusableElementsString = 'a[href], area[href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), button:not([disabled]), iframe, object, embed, [tabindex], [contenteditable]'
+      this._focusableElements = Array.from(
+        element.querySelectorAll(this._focusableElementsString)
+      )
+    }
+
+    get inert() {
+      return this._inert
+    }
+
+    set inert(isInert) {
+      if (this._inert === isInert) {
+        return
+      }
+
+      this._inert = isInert
+
+      this._focusableElements.forEach((child) => {
+        if (isInert) {
+          // If the child has an explict tabindex save it
+          if (child.hasAttribute('tabindex')) {
+            child.__savedTabindex = child.tabIndex
           }
-          else {
-            this.$emit('hide-sidebar')
+          // Set ALL focusable children to tabindex -1
+          child.setAttribute('tabindex', -1)
+        } else {
+          // If the child has a saved tabindex, restore it
+          // Because the value could be 0, explicitly check that it's not false
+          if (child.__savedTabindex === 0 || child.__savedTabindex) {
+            return child.setAttribute('tabindex', child.__savedTabindex)
+          } else {
+            // Remove tabindex from ANY REMAINING children
+            child.removeAttribute('tabindex')
           }
         }
+      })
+    }
+  }
+
+  export default {
+    name: 'appSidebar',
+    data() {
+      return {
+        startX: 0,
+        currentX: 0,
+        touchingSideNav: false,
+        supportsPassive: undefined,
+        showButtonEl: null,
+        hideButtonEl: null,
+        sideNavEl: null,
+        sideNavContainerEl: null,
+        detabinator: null
       }
     },
+    created() {
+      EventBus.$on('app-header:click-menu', () => {
+        this.showSideNav()
+      })
+    },
+    mounted() {
+      this.showButtonEl = document.querySelector('.showMenu')
+      this.hideButtonEl = document.querySelector('.js-menu-hide')
+      this.sideNavEl = document.querySelector('.js-side-nav')
+      this.sideNavContainerEl = document.querySelector('.js-side-nav-container')
+      this.detabinator = new Detabinator(this.sideNavContainerEl)
+      this.detabinator.inert = true
+
+      // this.showButtonEl.addEventListener('click', this.showSideNav)
+      this.hideButtonEl.addEventListener('click', this.hideSideNav)
+      this.sideNavEl.addEventListener('click', this.hideSideNav)
+      this.sideNavContainerEl.addEventListener('click', this.blockClicks)
+
+      this.sideNavEl.addEventListener('touchstart', this.onTouchStart, this.applyPassive())
+      this.sideNavEl.addEventListener('touchmove', this.onTouchMove, this.applyPassive())
+      this.sideNavEl.addEventListener('touchend', this.onTouchEnd)
+    },
     methods: {
-      close() {
-        this.sidebarStatus = false
+      applyPassive () {
+        if (this.supportsPassive !== undefined) {
+          return this.supportsPassive ? {passive: true} : false
+        }
+        // feature detect
+        let isSupported = false
+        try {
+          document.addEventListener('test', null, {get passive () {
+            isSupported = true
+          }})
+        } catch (e) {
+          throw new Error('apply passive error')
+        }
+        this.supportsPassive = isSupported
+        return this.applyPassive()
       },
-      closeAndGo(route) {
-        this.$router.push(route)
-        this.close()
+      onTouchStart (evt) {
+        if (!this.sideNavEl.classList.contains('side-nav--visible'))
+          return
+
+        this.startX = evt.touches[0].pageX
+        this.currentX = this.startX
+
+        this.touchingSideNav = true
+        requestAnimationFrame(this.update)
+      },
+      onTouchMove (evt) {
+        if (!this.touchingSideNav)
+          return
+
+        this.currentX = evt.touches[0].pageX
+      },
+      onTouchEnd (evt) {
+        if (!this.touchingSideNav)
+          return
+
+        this.touchingSideNav = false
+
+        const translateX = Math.min(0, this.currentX - this.startX)
+        this.sideNavContainerEl.style.transform = ''
+
+        if (translateX < 0) {
+          this.hideSideNav()
+        }
+      },
+      update () {
+        if (!this.touchingSideNav)
+          return
+
+        requestAnimationFrame(this.update)
+
+        const translateX = Math.min(0, this.currentX - this.startX)
+        this.sideNavContainerEl.style.transform = `translateX(${translateX}px)`
+      },
+      blockClicks (evt) {
+        evt.stopPropagation()
+      },
+      onTransitionEnd (evt) {
+        this.sideNavEl.classList.remove('side-nav--animatable')
+        this.sideNavEl.removeEventListener('transitionend', this.onTransitionEnd)
+      },
+      showSideNav () {
+        this.sideNavEl.classList.add('side-nav--animatable')
+        this.sideNavEl.classList.add('side-nav--visible')
+        this.detabinator.inert = false
+        this.sideNavEl.addEventListener('transitionend', this.onTransitionEnd)
+      },
+      hideSideNav () {
+        this.sideNavEl.classList.add('side-nav--animatable')
+        this.sideNavEl.classList.remove('side-nav--visible')
+        this.detabinator.inert = true
+        this.sideNavEl.addEventListener('transitionend', this.onTransitionEnd)
       }
     }
   }
 </script>
 
 <style lang="stylus" scoped>
-  // 左侧触发滑动宽度
-  $swipe-width = 20px
+  .side-nav
+    position fixed
+    left 0
+    top 0
+    z-index $app-sidebar-zindex
+    width 100%
+    height 100%
+    overflow hidden
+    pointer-events none
+    &::before
+      content ''
+      display block
+      position absolute
+      left 0
+      top 0
+      width 100%
+      height 100%
+      background rgba(0,0,0,0.4)
+      opacity 0
+      will-change opacity
+      transition opacity 0.3s cubic-bezier(0,0,0.3,1)
 
-  ul, li
+  .side-nav--visible
+    pointer-events auto
+    &.side-nav--animatable
+      .side-nav__container
+        transition transform 0.33s cubic-bezier(0,0,0.3,1)
+    &::before
+      opacity 1
+    .side-nav__container
+      transform none
+
+  .side-nav__container
+    position relative
+    width 90%
+    max-width 400px
+    background #FFF
+    height 100%
+    box-shadow 2px 0 12px rgba(0,0,0,0.4)
+    transform translateX(-102%)
+    display flex
+    flex-direction column
+    will-change transform
+
+  .side-nav--animatable
+    .side-nav__container
+      transition transform 0.13s cubic-bezier(0,0,0.3,1)
+
+  .side-nav__hide
+    position absolute
+    left 16px
+    top 16px
+    z-index $app-sidebar-zindex
+    background none
+    border none
+    color #FFF
+    width 24px
+    height 24px
     padding 0
     margin 0
+
+  .side-nav__header
+    height 200px
+    background #EA2663
+    color #FFF
+    display flex
+    padding 16px
+    align-items flex-end
+    font-size 24px
+
+  .side-nav__content
+    flex 1
     list-style none
-
-  a
-    text-decoration none
-    color #333
-
-  .app-sidebar-content
-    &.app-sidebar-content-right
-      box-shadow -3px 0 8px 1px rgba(0, 0, 0, 0.4)
-
-      &.app-sidebar-title,
-      &.app-sidebar-blocks
-        text-align right
-
-    .app-sidebar-title-left-icon,
-    .app-sidebar-block-left-icon
-      display inline-block
-      width ($app-sidebar-left-icon-size + 10) px
-      height 100%
-
-      img
-        vertical-align middle
-        width ($app-sidebar-left-icon-size) px
-        height ($app-sidebar-left-icon-size) px
-      svg
-        position relative
-        left 0
-        top 0
-        transform none
-        vertical-align middle
-        height ($app-sidebar-left-icon-size) px
-        width ($app-sidebar-left-icon-size) px
-
-      .material-icons
-        font-size ($app-sidebar-left-icon-size) px
-
-    .app-sidebar-block-text
-      display inline-block
-      height 100%
-      vertical-align middle
-
-    .app-sidebar-title-right-logo,
-    .app-sidebar-block-right-logo
-      float right
-
-      img
-        width 20px
-        height 20px
-        margin-right 10px
-
-    .app-sidebar-title
-      color #fff
-      padding 0 10px
-      font-size 16px
-      font-weight bold
-      height $app-sidebar-title-height
-      line-height $app-sidebar-title-height
-      background: $theme.primary
-      text-align left
-
-    .app-sidebar-user
-      padding 0 10px
-      font-size 16px
-      .user-avatar
-        margin 30px auto 0 auto
-        height 100px
-        width 100px
-        i
-          font-size 100px
-          color #666
-      .user-info
-        padding 20px 0
-        text-align center
-        border-bottom 1px solid #e0e0e0
-        > div
-          margin 5px 0
-          i
-            font-size 18px
-            margin-right 5px
-
-    .app-sidebar-blocks
-      text-align left
-
-      .app-sidebar-block
-        padding 10px 0
-        border-bottom 1px solid #e0e0e0
-        color #333
-
-        .sub-list-title
-          height $app-sidebar-nav-height
-          line-height $app-sidebar-nav-height
-          text-indent ($app-sidebar-left-icon-size) px
-          font-weight bold
-          color #888
-
-        li
-          padding-left 15px
-          height $app-sidebar-nav-height
-          line-height $app-sidebar-nav-height
-
-          &:last-child
-            border none
-
-        &:last-child
-          border-bottom none
+    padding 0
+    margin 0
+    text-align left
+    overflow-x hidden
+    overflow-y auto
+    -webkit-overflow-scrolling touch
+    li
+      height 48px
+      line-height 48px
+      padding 0 16px
+      &:hover
+        background #CCC
 </style>
