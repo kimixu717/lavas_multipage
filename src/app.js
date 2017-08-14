@@ -9,7 +9,7 @@ import App from './App.vue'
 import { createRouter } from './router.js'
 import store from './store'
 import Icon from 'vue-awesome/components/Icon.vue'
-import ProgressBar from '@/components/ProgressBar.vue'
+import ProgressBar from '@/components/appShell/ProgressBar.vue'
 import FastClick from 'fastclick'
 import http from './http.js'
 

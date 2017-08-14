@@ -21,8 +21,8 @@
 
 <script>
   import { mapState, mapActions } from 'vuex'
-  import AppHeader from '@/components/AppHeader'
-  import AppSidebar from '@/components/AppSidebar'
+  import AppHeader from '@/components/appShell/AppHeader'
+  import AppSidebar from '@/components/appShell/AppSidebar'
 
   export default {
     name: 'app',

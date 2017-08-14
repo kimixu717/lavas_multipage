@@ -15,7 +15,7 @@
 </template>
 
 <script>
-  import EventBus from '../event-bus'
+  import EventBus from '../../event-bus'
 
   class Detabinator {
     constructor(element) {
