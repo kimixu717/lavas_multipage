@@ -27,7 +27,7 @@
     activated() {
       this.setAppHeader({
         show: true,
-        title: 'Lavas',
+        title: 'Home',
         showMenu: true,
         showBack: false,
         showLogo: true,

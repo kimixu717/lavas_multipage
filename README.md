@@ -15,11 +15,11 @@
   ``` bash
   yarn remove [package]
   ```
-- 在 localhost:9000 上启动带有热更新机制的开发服务器
+- 在 localhost:8002 上启动带有热更新机制的开发服务器
   ``` bash
   npm run dev
   ```
-- 在 localhost:9009 上启动服务器,用于手机上查看控制台报错
+- 在 localhost:9000 上启动服务器,用于手机上查看控制台报错
   ``` bash
   npm run vconsole
   ```

@@ -22,6 +22,10 @@
   <% for (var cssFilePath of htmlWebpackPlugin.files.css) { %>
   <link rel="preload" href="<%= cssFilePath %>" as="style">
   <% } %>
+  <!-- load vconsole in mobile phone -->
+  <% if (process.env.NODE_ENV === 'vconsole') { %>
+  <script src="https://cdn.jsdelivr.net/npm/vconsole"></script>
+  <% } %>
 </head>
 <body>
 <div id="app"></div>

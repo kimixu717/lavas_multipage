@@ -7,7 +7,7 @@
   "scripts": {
     "dev": "node build/dev-server.js",
     "lint": "fecs ./ --rule --type 'vue,js,css'",
-    "start": "node build/dev-server.js",
+    "vconsole": "node build/vconsole-server.js",
     "build": "node build/build.js"
   },
   "dependencies": {
