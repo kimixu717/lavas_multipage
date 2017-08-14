@@ -126,7 +126,7 @@
       flex 1
       font-size 1.2em
 
-  // 改变 icon 大小
+    // 改变 icon 大小
     .app-header-icon
       color $btn-color
       width 20px

@@ -52,9 +52,6 @@
       ...mapActions('appShell/appHeader', [
         'setAppHeader'
       ]),
-      ...mapActions('appShell/appBottomNavigator', [
-        'hideBottomNav'
-      ]),
       async search() {
 
         // 把数据清空
@@ -108,7 +105,6 @@
     },
     activated() {
       this.setAppHeader({ show: false })
-      this.hideBottomNav()
     }
   }
 </script>

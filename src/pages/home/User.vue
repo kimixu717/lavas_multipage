@@ -53,10 +53,6 @@
     methods: {
       ...mapActions('appShell/appHeader', [
         'setAppHeader'
-      ]),
-      ...mapActions('appShell/appBottomNavigator', [
-        'showBottomNav',
-        'activateBottomNav'
       ])
     },
     activated() {
@@ -73,10 +69,6 @@
           }
         ]
       })
-
-      // 设置当前 bottom navigator 显示的 item
-      this.activateBottomNav('user')
-      this.showBottomNav()
     },
     async asyncData({ store, route }) {
       await new Promise(resolve => {

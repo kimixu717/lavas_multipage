@@ -33,9 +33,6 @@
     methods: {
       ...mapActions('appShell/appHeader', [
         'setAppHeader'
-      ]),
-      ...mapActions('appShell/appBottomNavigator', [
-        'hideBottomNav'
       ])
     },
     async asyncData() {
@@ -57,7 +54,6 @@
           }
         ]
       })
-      this.hideBottomNav()
     }
   }
 </script>
