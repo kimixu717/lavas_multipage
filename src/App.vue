@@ -1,46 +1,20 @@
 <template>
   <div id="app">
     <div class="app-shell">
-      <app-header
-        class="app-shell-header"
-        @click-menu="handleClickHeaderMenu"
-        @click-back="handleClickHeaderBack">
+      <app-header class="app-shell-header" @click-menu="handleClickHeaderMenu" @click-back="handleClickHeaderBack">
         <template slot="logo"></template>
       </app-header>
-      <app-sidebar
-        @hide-sidebar="handleHideSidebar"
-        @show-sidebar="handleShowSidebar"
-      >
+      <app-sidebar @hide-sidebar="handleHideSidebar" @show-sidebar="handleShowSidebar">
         <template slot="logo"><span></span></template>
       </app-sidebar>
       <div class="app-view-wrapper">
-        <transition
-          :name="pageTransitionName"
-          @before-enter="handleBeforeEnter"
-          @after-enter="handleAfterEnter"
-          @before-leave="handleBeforeLeave">
+        <transition :name="pageTransitionName" @before-enter="handleBeforeEnter" @after-enter="handleAfterEnter" @before-leave="handleBeforeLeave">
           <keep-alive>
-            <router-view
-              :key="$route.fullPath"
-              v-if="!$route.meta.notKeepAlive"
-              class="app-view"
-              :class="{
-                'app-view-with-header': appHeader.show
-              }"></router-view>
+            <router-view :key="$route.fullPath" v-if="!$route.meta.notKeepAlive" class="app-view" :class="{'app-view-with-header': appHeader.show}"></router-view>
           </keep-alive>
         </transition>
-        <transition
-          :name="pageTransitionName"
-          @before-enter="handleBeforeEnter"
-          @after-enter="handleAfterEnter"
-          @before-leave="handleBeforeLeave">
-          <router-view
-            :key="$route.fullPath"
-            v-if="$route.meta.notKeepAlive"
-            class="app-view"
-            :class="{
-              'app-view-with-header': appHeader.show
-            }"></router-view>
+        <transition :name="pageTransitionName" @before-enter="handleBeforeEnter" @after-enter="handleAfterEnter" @before-leave="handleBeforeLeave">
+          <router-view :key="$route.fullPath" v-if="$route.meta.notKeepAlive" class="app-view" :class="{'app-view-with-header': appHeader.show}"></router-view>
         </transition>
       </div>
     </div>

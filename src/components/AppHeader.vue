@@ -1,18 +1,11 @@
 <template>
-  <transition
-    name="slide-down">
+  <transition>
     <header class="app-header-wrapper" v-show="show">
       <div class="app-header-left">
-        <v-btn
-          icon
-          v-if="showMenu"
-          @click.native="handleClick('menu')">
+        <v-btn icon v-if="showMenu" @click.native="handleClick('menu')">
           <v-icon class="app-header-icon">menu</v-icon>
         </v-btn>
-        <v-btn
-          icon
-          v-if="showBack"
-          @click.native="handleClick('back')">
+        <v-btn icon v-if="showBack" @click.native="handleClick('back')">
           <v-icon class="app-header-icon">arrow_back</v-icon>
         </v-btn>
         <div v-if="showLogo" @click="handleClick('logo')">
@@ -27,13 +20,8 @@
         </slot>
       </div>
       <div class="app-header-right">
-        <slot name="actions"
-          v-for="action, actionIdx in actions"
-          :icon="action.icon"
-          :route="action.route">
-          <v-btn
-            icon="icon"
-            @click.native="handleClick('action', {actionIdx, route: action.route})">
+        <slot name="actions" v-for="action, actionIdx in actions" :icon="action.icon" :route="action.route">
+          <v-btn icon="icon" @click.native="handleClick('action', {actionIdx, route: action.route})">
             <icon v-if="action.svg" :name="action.svg" class="app-header-icon"></icon>
             <v-icon v-else-if="action.icon" class="app-header-icon">{{ action.icon }}</v-icon>
           </v-btn>
@@ -113,10 +101,6 @@
     padding 0
     box-shadow 0 2px 4px -1px rgba(0, 0, 0, .2), 0 4px 5px rgba(0, 0, 0, .14), 0 1px 10px rgba(0, 0, 0, .12)
     transition transform 0.3s ease-out
-
-    &.slide-down-enter,
-    &.slide-down-leave-to
-      transform translate(0, -100%)
 
     & > div
       display flex
