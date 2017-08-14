@@ -1,0 +1,90 @@
+// 用法：直接使用nc-1px等类
+// 扩展用法：首先引入此stylus,然后：
+// .class
+//   setLine(#000,3px,10px)
+// 第一个参数边框颜色，第二个弧度，第三个应用此类的元素的设计图高度
+
+setLine(c=rgb(199, 199, 199, 1), br=0, h=100%)
+  &:after
+    content " "
+    position absolute
+    left 0
+    top 0
+    width 200%
+    height 2*h
+    border 1px solid c
+    border-radius br
+    color c
+    transform-origin left top
+    transform scale(0.5)
+
+setTopLine(c=rgb(199, 199, 199, 1))
+  &:before
+    content " "
+    position absolute
+    left 0
+    top 0
+    right 0
+    height 1px
+    border-top 1px solid c
+    color c
+    transform-origin 0 0
+    transform scaleY(0.5)
+
+setBottomLine(c=rgb(199, 199, 199, 1))
+  &:after
+    content " "
+    position absolute
+    left 0
+    bottom 0
+    right 0
+    height 1px
+    border-bottom 1px solid c
+    color c
+    transform-origin 0 100%
+    transform scaleY(0.5)
+
+setLeftLine(c=rgb(199, 199, 199, 1))
+  &:before
+    content " "
+    position absolute
+    left 0
+    top 0
+    width 1px
+    bottom 0
+    border-left 1px solid c
+    color c
+    transform-origin 0 0
+    transform scaleX(0.5)
+
+setRightLine(c=rgb(199, 199, 199, 1))
+  &:after
+    content " "
+    position absolute
+    right 0
+    top 0
+    width 1px
+    bottom 0
+    border-right 1px solid c
+    color c
+    transform-origin 100% 0
+    transform scaleX(0.5)
+
+.nc-1px, .nc-1px-t, .nc-1px-b, .nc-1px-tb, .nc-1px-lr, .nc-1px-l, .nc-1px-r
+  position relative
+.nc-1px
+  setLine()
+.nc-1px-t
+  setTopLine()
+.nc-1px-b
+  setBottomLine()
+.nc-1px-tb
+  setTopLine()
+  setBottomLine()
+.nc-1px-lr
+  setLeftLine()
+  setRightLine()
+.nc-1px-l
+  setLeftLine()
+.nc-1px-r
+  setRightLine()
